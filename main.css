@@ -1,0 +1,112 @@
+html, body {
+    height: 100vh;
+    width: 100%;
+}
+
+.fill {
+    height: 100vh;
+}
+
+#map {
+    height: 100vh;
+}
+
+.location {
+    height: 40px;
+    min-height: 40px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.highlight, .location:hover {
+    background-color: #3d96d4;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.icon-bar {
+    background-color: #ffffff;
+}
+
+.btn-menu {
+    background-color: #3d96d4;
+    position: absolute;
+    top: 0.5%;
+    right: 2%;
+    z-index: 1;
+}
+
+.main {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.filter {
+    width: 100%;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    height: 40px;
+}
+
+.menu {
+    margin-left: 8px;
+    margin-right: -8px;
+}
+
+
+/*
+* Off Canvas
+* --------------------------------------------------
+* adapted from source:
+* https://getbootstrap.com/examples/offcanvas/
+*/
+
+body {
+    overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+
+@media screen and (max-width: 767px) {
+    .row-offcanvas {
+        position: relative;
+        -webkit-transition: all .25s ease-out;
+        -o-transition: all .25s ease-out;
+        transition: all .25s ease-out;
+    }
+
+    .row-offcanvas-right {
+        right: 0;
+    }
+
+    .row-offcanvas-left {
+        left: 0;
+    }
+
+    .row-offcanvas-right
+    .sidebar-offcanvas {
+        right: -250px;
+    }
+
+    .row-offcanvas-right.active {
+        right: 250px;
+    }
+
+    .row-offcanvas-left.active {
+        left: 250px;
+    }
+
+    .sidebar-offcanvas {
+        position: absolute;
+        top: 0;
+        width: 250px;
+    }
+
+    .menu {
+        margin-right: 8px;
+        padding-left: 3px;
+    }
+}

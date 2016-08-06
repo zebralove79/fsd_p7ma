@@ -6,7 +6,7 @@ This single page application features a map of lunch places (and one coffee plac
 ## Instructions
 1. Clone the repo
 2. Enter your foursquare client id and client secret in the main.js file (URLPARAMS variable)
-3. Provide your Google Maps API key in main.js (GMAPSKEY variable)
+3. Provide your Google Maps API key in index.html (GMAPSKEY variable)
 4. Open the index.html file
 5. Play around with the map
 
@@ -17,7 +17,7 @@ Several resources were used in the making of this app:
 - Google Maps API and its documentation
 - jQuery and its documentation
 - KnockoutJS and its documentation
-- http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html helped me get a grip on KnockoutJS' utility functions (the entry is really old the functions have changed, but that article gives you a good indication nonetheless)
+- http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html helped me get a grip on KnockoutJS' utility functions (the entry is really old and the functions have changed, but that article gives you a good indication nonetheless)
 - last, but very much not least: a stack of Stack Overflow answers
 
 ## Note

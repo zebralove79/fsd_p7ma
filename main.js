@@ -3,7 +3,6 @@
 // Supply your own Google Maps API key [GMAPS_API_KEY]
 var URLROOT = 'https://api.foursquare.com/v2/venues/'
 var URLPARAMS = '?client_id=[CLIEND_ID]&client_secret=CLIENT_SECRET&v=20160730'
-var GMAPSKEY = '[GMAPS_API_KEY]'
 
 // Global variables
 var map = null;
@@ -18,37 +17,19 @@ var locationsArray = ko.observableArray([
     { name: "Spätzle Club", lat: 52.510665, lng: 13.4022438, details: "German", highlight: ko.observable(false), foursquare: "4c86209047cc224b4b66a69f" }
     ]);
 
-// Initialise the application once the document has loaded
-$(document).ready(function () {
-    initialise();
-});
-
 /**
  * Initialise the Google Maps map, create the view model and markers
  * as well as apply the knockout bindings
  */
-function initialise() {
-    $.ajax({
-        url: 'https://maps.googleapis.com/maps/api/js?key=' + GMAPSKEY,
-        dataType: "script",
-        success: function() {
-            $('[data-toggle="offcanvas"]').click(function () {
-                $('.row-offcanvas').toggleClass('active')
-            });
-
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: { lat: 52.513066, lng: 13.3960058 }
-            });
-
-            viewModel = new ViewModel();
-            viewModel.createMarkers();
-            ko.applyBindings(viewModel);
-        },
-        error: function() {
-            alert('Oops, something went wrong. Please try again later.');
-        }
+ function initialise() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: { lat: 52.513066, lng: 13.3960058 }
     });
+
+    viewModel = new ViewModel();
+    viewModel.createMarkers();
+    ko.applyBindings(viewModel);
 }
 
 /**
@@ -60,7 +41,14 @@ function initialise() {
     self.locations = locationsArray;
     self.filter = ko.observable("");
 
-    self.infoWindow = null;
+    self.infoWindow = new google.maps.InfoWindow();
+
+    /**
+     * Opens the offcanvas menu on mobile devices on click on burger icon.
+     */
+     self.openMenu = function() {
+        $('.row-offcanvas').toggleClass('active');
+    };
 
     /**
      * Loops over all locations, uses their coordinates to create Google Maps
@@ -69,16 +57,16 @@ function initialise() {
      */
      self.createMarkers = function() {
         ko.utils.arrayForEach(self.locations(), function(item) {
-            marker = new google.maps.Marker({
+            var marker = new google.maps.Marker({
                 position: { lat: item.lat, lng: item.lng },
                 map: map,
                 title: item.name,
                 animation: google.maps.Animation.DROP
             });
-            marker.addListener('click', self.showInfoMarker)
+            marker.addListener('click', self.showInfoMarker);
             item.marker = marker;
         });
-    }
+    };
 
     /**
      * Remove all animation from markers and any highlighed locations
@@ -89,7 +77,7 @@ function initialise() {
             self.filteredLocations()[i].marker.setAnimation(null);
             self.filteredLocations()[i].highlight(false);
         }
-    }
+    };
 
     /**
      * Shows an Google Maps information window on the selected
@@ -102,11 +90,6 @@ function initialise() {
      * @param  loc the location of the information window
      */
      self.showInfoWindow = function(loc) {
-        if (self.infoWindow) {
-            self.infoWindow.close();
-        }
-
-        var rating = "";
         var url = URLROOT + loc.foursquare + URLPARAMS;
 
         $.ajax({
@@ -114,27 +97,25 @@ function initialise() {
             type: 'GET',
 
             success: function(data) {
-                rating = data.response.venue.rating;
-                foursquareUrl = data.response.venue.canonicalUrl;
-                image = data.response.venue.photos.groups[0].items[0].prefix + '165x165' + data.response.venue.photos.groups[0].items[0].suffix;
+                var rating = data.response.venue.rating;
+                var foursquareUrl = data.response.venue.canonicalUrl;
+                var image = data.response.venue.photos.groups[0].items[0].prefix + '165x165' + data.response.venue.photos.groups[0].items[0].suffix;
 
-                content = '<div class="bold">' + loc.name + '</div>';
+                var content = '<div class="bold">' + loc.name + '</div>';
                 content += '<div>Rating: ' + rating + '/10</div>';
                 content += '<div>Details: ' + loc.details + '</div>';
                 content += '<div><img src="' + image + '"></div>';
                 content += '<div>Find out more on <a href="' + foursquareUrl + '" target="_blank">foursquare</a>.</div>';
 
-                self.infoWindow = new google.maps.InfoWindow({
-                    content: content
-                });
+                self.infoWindow.setContent(content);
                 self.infoWindow.open(map, loc.marker);
             },
 
             error: function(data) {
-                alert('Oops, something went wrong. Please try again later.');
+                $('.notification').append('<div class="alert alert-danger"><strong>Oops</strong>, something went wrong. Please try again later.</div>');
             }
         });
-    }
+    };
 
     /**
      * This function handles clicks on entries in the location list
@@ -155,7 +136,7 @@ function initialise() {
 
         // Close the offcanvas menu
         $('.row-offcanvas').removeClass('active');
-    }
+    };
 
     /**
      * This function handles clicks on map marlkers
@@ -167,14 +148,14 @@ function initialise() {
         // Set animation for clicked marker and enable highlighting in list
         var that = this;
         that.setAnimation(google.maps.Animation.BOUNCE);
-        loc = ko.utils.arrayFirst(self.locations(), function(item) {
+        var loc = ko.utils.arrayFirst(self.locations(), function(item) {
             return item.marker === that;
         });
         loc.highlight(true);
 
         // Show the information window on the map
         self.showInfoWindow(loc);
-    }
+    };
 
     /**
      * Applies a filter to the view model's locations. If there is no filter

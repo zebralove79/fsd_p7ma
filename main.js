@@ -33,6 +33,13 @@ var locationsArray = ko.observableArray([
 }
 
 /**
+ * Display a general error message
+ */
+ self.showError = function() {
+    $('.notification').append('<div class="alert alert-danger"><strong>Oops</strong>, something went wrong. Please try again later.</div>');
+}
+
+/**
  * The view model and its utility functions
  */
  function ViewModel() {
@@ -61,7 +68,7 @@ var locationsArray = ko.observableArray([
                 position: { lat: item.lat, lng: item.lng },
                 map: map,
                 title: item.name,
-                animation: google.maps.Animation.DROP
+                animation: google.maps.Animation.DROP,
             });
             marker.addListener('click', self.showInfoMarker);
             item.marker = marker;
@@ -112,7 +119,7 @@ var locationsArray = ko.observableArray([
             },
 
             error: function(data) {
-                $('.notification').append('<div class="alert alert-danger"><strong>Oops</strong>, something went wrong. Please try again later.</div>');
+                showError();
             }
         });
     };
@@ -127,6 +134,9 @@ var locationsArray = ko.observableArray([
         // Set animation for clicked marker and enable highlighting in list
         var that = this;
         that.marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            that.marker.setAnimation(null);
+        }, 700);
         map.setCenter({ lat: that.lat, lng: that.lng });
         map.setZoom(16);
         that.highlight(true);
@@ -148,6 +158,9 @@ var locationsArray = ko.observableArray([
         // Set animation for clicked marker and enable highlighting in list
         var that = this;
         that.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            that.setAnimation(null);
+        }, 700);
         var loc = ko.utils.arrayFirst(self.locations(), function(item) {
             return item.marker === that;
         });
